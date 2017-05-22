@@ -1,3 +1,4 @@
+#include "struct.h"
 #include "pile.h"
 
 #ifndef AFFICHAGE
