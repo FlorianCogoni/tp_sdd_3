@@ -1,8 +1,7 @@
 #include <stdio.h>
+#include <ctype.h>
 #include "struct.h"
 #include "pile.h"
-#include "struct.h"
-#include <ctype.h>
 
 void afficheMot(pile_t * pPile)
 {
