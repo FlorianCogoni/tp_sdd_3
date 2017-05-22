@@ -1,10 +1,110 @@
 #include <stdio.h>
-#include "struct.h"
-#include "insertion.h"
+#include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include <stdlib.h>
+#include "struct.h"
+#include "insertion.h"
+
 #define TAILLE 30
+
+arbre_t ** recherche(arbre_t * a, char mot[], int l, int * i)
+{
+  arbre_t * cour = a;
+  arbre_t ** prec = &a;
+  while(cour != NULL && tolower(cour->lettre) <= tolower(mot[*i]) && *i<l)
+  {
+    if(cour->lettre == mot[*i])
+    {
+      prec = &(cour->lv);
+      cour = cour->lv;
+      *i += 1;
+    }
+    else 
+    {
+      prec = &(cour->lh);
+      cour = cour->lh;
+    }
+  }
+  return prec;
+}
+
+void insert(arbre_t ** a, char mot[], int l )
+{
+  arbre_t * ins;
+  arbre_t * temp;
+  int i = 0;
+  arbre_t ** m = recherche(*a,mot,l,&i);
+  if (i < l) 
+  {
+    if(*a != NULL) 
+    {
+      ins = (arbre_t *) malloc(sizeof(arbre_t));
+      ins->lettre = mot[i];
+      ins->lv = NULL;
+      ins->lh = NULL;
+      temp = *m;
+      *m = ins;
+      ins->lh = temp;
+      i++;
+    }
+    else
+    {
+      *a = (arbre_t *) malloc(sizeof(arbre_t));
+      (*a)->lettre = mot[i];
+      (*a)->lv = NULL;
+      (*a)->lh = NULL;
+      ins = *a;
+      i++;
+    }
+    while(i<l)
+    {
+      temp = ins;
+      ins = (arbre_t *) malloc(sizeof(arbre_t));
+      ins->lettre = mot[i];
+      ins->lh = NULL;
+      ins->lv = NULL;
+      temp->lv = ins;
+      i++;
+    }
+  }
+  else
+  {
+
+}
+
+}
+
+void liberer(arbre_t * a)
+{
+  if(a == NULL)
+  {
+    free(a);
+  }
+  else 
+  {
+    if (a->lh == NULL && a->lv == NULL) 
+    {
+      free(a);
+    } 
+    else 
+    {
+      if (a->lv != NULL) 
+      {
+        liberer(a->lv);
+        a->lv = NULL;
+      }
+      if (a->lh != NULL) 
+      {
+        liberer(a->lh);
+        a->lh = NULL;
+      }
+    }
+  }
+}
+
+
+
+
 
 arbre_t ** recherche(arbre_t * a, char mot[], int l,int * i)
 { /*mot en minuscule*/
