@@ -25,7 +25,7 @@ void affichage(arbre_t * a)
 		while (cour != NULL)
 		{
 			empile(pPile,cour); /* on empile les adresses */
-      if (isupper(cour->lettre))  /*on affiche seulement les mots qui finissent par une majuscule*/
+      			if (isupper(cour->lettre))  /*on affiche seulement les mots qui finissent par une majuscule*/
 			{
 				afficheMot(pPile);
 			}
