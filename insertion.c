@@ -39,8 +39,8 @@ arbre_t * recherche(arbre_t * a, char mot[], int l, int * i, int * parente)
 void insert(arbre_t ** a, char mot[], int l )
 /* la derniere lettre de mot doit être en majuscule*/
 {
-  arbre_t * nouv;
-  arbre_t * temp;
+  arbre_t * nouv = NULL;
+  arbre_t * temp = NULL;
   int i = 0;
   int parente = 0;
   arbre_t * adr_ins = recherche(*a,mot,l,&i,&parente);/*on recherche l'adresse a partir de laquelle on insere*/
@@ -54,17 +54,26 @@ void insert(arbre_t ** a, char mot[], int l )
       nouv->lettre = mot[i];
       nouv->lv = NULL;
       nouv->lh = NULL;
-      if(parente == 1){
-        /*on insere a partir du lien vertical*/
-          temp = adr_ins->lv;
-          adr_ins->lv = nouv;
+      switch (parente)
+      {
+        case 1 : /*on insere a partir du lien vertical*/
+              temp = adr_ins->lv;
+              adr_ins->lv = nouv;
+              break;
+        case 2 : /* on insere depuis le lien horizontal*/
+              temp = adr_ins->lh;
+              adr_ins->lh = nouv;
+              nouv->lh = temp;      /*on raccorde*/
+              break;
+        default : /*on insere en tete*/
+              temp = (arbre_t *) malloc(sizeof(arbre_t));
+              *temp = *adr_ins;
+              *adr_ins = *nouv;
+              adr_ins->lh = temp;
+              nouv = adr_ins;
+              break;
       }
-      else{
-        /* on insere depuis le lien horizontal*/
-        temp = adr_ins->lh;
-        adr_ins->lh = nouv;
-      }
-      nouv->lh = temp;      /*on raccorde*/
+
       i++;                  /*on passe a la lettre suivante*/
     }
     else
