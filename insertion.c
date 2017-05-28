@@ -1,3 +1,18 @@
+/*
+ ______________________________________________________________________________________
+|                                                                                      |
+|                              ___________________                                     |
+|                             |                   |                                    |
+|                             |    insertion.c    |                                    |
+|                             |___________________|                                    |
+|                                                                                      |
+|______________________________________________________________________________________|
+
+	Ce fichier contient les fonctions pour la question 1 : l'insertion.
+
+*/
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -9,66 +24,86 @@
 #define TAILLE_MOTS 30 /* taille maximale des mots */
 #define NB_BLOCS 200 /* nombre de blocs (de l'arbre) maximal */
 
+/*---------------------------------------------------------------------
+
+      Cette fonction renvoie l'adresse de l'élément précédent la dernière lettre
+ de mot présente dans l'arbre a, avec sa parenté (lien vertical ou horizontal),
+ ainsi que le nombre de lettre i déjà présentes dans l'arbre.
+        Elle prend en paramètres la longueur de mot l, l'adresse de l'arbre, et
+le mot à chercher.
+
+*/
+
+
 arbre_t * recherche(arbre_t * a, char mot[], int l, int * i, int * parente)
 {
   arbre_t * prec = NULL;
   arbre_t * cour = a;
   while(cour != NULL && tolower(cour->lettre) <= tolower(mot[*i]) && *i<l)
-    /*on a pas atteint une extremite de l'arbre et l'on a pas depasse la lettre*/
+    /* on n'a pas atteint une extremité de l'arbre et l'on a pas depassé la lettre */
   {
     if(cour->lettre == mot[*i])
-      /*s'il s'agit de la bonne lettre*/
+      /* s'il s'agit de la bonne lettre */
     {
-      /*on continue de chercher a partir du lien vertical*/
+      /* on continue de chercher à partir du lien vertical */
       prec = cour;
       cour = cour->lv;
-      *i += 1;          /*on incremente la position dans le mot*/
-      *parente = 1;     /* le lien de parente est vertical*/
+      *i += 1;          /* on incrémente la position dans le mot */
+      *parente = 1;     /* le lien de parenté est vertical */
     }
     else
-      /* sinon on continue à chercher la lettre a partir du lien horizontal*/
+      /* sinon on continue à chercher la lettre à partir du lien horizontal*/
     {
       prec = cour;
       cour = cour->lh;
-      *parente = 2;     /*la parente est horizontal*/
+      *parente = 2;     /*le lien de parenté est horizontal*/
     }
   }
   return prec;
 }
 
+
+/*---------------------------------------------------------------------
+
+      Cette fonction insère dans un arbre le mot donné en entrée (on donne aussi
+sa longueur).
+
+*/
+
+
 void insert(arbre_t ** a, char mot[], int l )
-/* la derniere lettre de mot doit être en majuscule*/
+/* la dernière lettre de mot doit être en majuscule */
 {
   arbre_t * nouv;
   arbre_t * temp;
   int i = 0;
   int parente = 0;
-  arbre_t * adr_ins = recherche(*a,mot,l,&i,&parente);/*on recherche l'adresse a partir de laquelle on insere*/
+  arbre_t * adr_ins = recherche(*a,mot,l,&i,&parente); /* on recherche l'adresse à partir de laquelle on insère */
   if (i < l)
-    /*si le mot n'est pas present dans l'arbre*/
+    /* si le mot n'est pas présent dans l'arbre */
   {
     if(*a != NULL)
-      /*si l'on insere dans un arbre non vide*/
+      /* si l'on insère dans un arbre non vide */
     {
       nouv = (arbre_t *) malloc(sizeof(arbre_t));
       nouv->lettre = mot[i];
       nouv->lv = NULL;
       nouv->lh = NULL;
       if(parente == 1){
-        /*on insere a partir du lien vertical*/
+        /* on insère à partir du lien vertical */
           temp = adr_ins->lv;
           adr_ins->lv = nouv;
       }
       else{
-        /* on insere depuis le lien horizontal*/
+        /* on insère depuis le lien horizontal */
         temp = adr_ins->lh;
         adr_ins->lh = nouv;
       }
-      nouv->lh = temp;      /*on raccorde*/
-      i++;                  /*on passe a la lettre suivante*/
+      nouv->lh = temp;      /* on raccorde */
+      i++;                  /* on passe à la lettre suivante */
     }
     else
-      /*si l'arbre est vide*/
+      /* si l'arbre est vide */
     {
       *a = (arbre_t *) malloc(sizeof(arbre_t));
       (*a)->lettre = mot[i];
@@ -78,7 +113,7 @@ void insert(arbre_t ** a, char mot[], int l )
       i++;
     }
     while(i<l)
-      /*jusqu'a la derniere lettre on insere verticalement les lettres du mots*/
+      /* jusqu'à la dernière lettre on insère verticalement les lettres du mots */
     {
       temp = nouv;
       nouv = (arbre_t *) malloc(sizeof(arbre_t));
@@ -90,11 +125,47 @@ void insert(arbre_t ** a, char mot[], int l )
     }
   }
   else
-    /*si les lettres du mot sont deja dans l'arbre*/
+    /* si les lettres du mot sont déjà dans l'arbre */
   {
-    adr_ins->lettre = mot[l-1];   /*on met la derniere lettre du mot en majuscule*/
+    adr_ins->lettre = mot[l-1];   /* on met la dernière lettre du mot en majuscule */
   }
 }
+
+
+
+/*---------------------------------------------------------------------
+
+      Cette fonction insère à partir d'un fichier.
+
+*/
+
+
+void insertionFichierTexte(arbre_t ** a, char nomFichier[])
+{
+	/* les mots du fichier doivent avoir leur dernière lettre en majuscule */
+  FILE * fichier = NULL;
+  char mot[TAILLE_MOTS] ="";
+  fichier = fopen(nomFichier,"r");
+  if (fichier != NULL)
+  {
+    while(fgets(mot,TAILLE_MOTS,fichier) != NULL) /* tant qu'on est pas à la fin du fichier */
+    {
+      insert(a,mot,strlen(mot)); /* on insère le mot qu'on vient de lire dans le fichier */
+    }
+  }
+  else
+  {
+    printf("problème d'ouverture du fichier");
+  }
+  fclose(fichier);
+}
+
+
+/*---------------------------------------------------------------------
+
+      Cette fonction libère l'arbre.
+
+*/
 
 
 void liberer(arbre_t * a)
@@ -128,25 +199,4 @@ void liberer(arbre_t * a)
 	}
 	libererPile(pPileParcours); /* on libère les 2 piles */
 	libererPile(pPileAliberer);
-}
-
-
-void insertionFichierTexte(arbre_t ** a, char nomFichier[])
-{
-	/* les mots du fichier doivent avoir leur dernière lettre en majuscule */
-  FILE * fichier = NULL;
-  char mot[TAILLE_MOTS] ="";
-  fichier = fopen(nomFichier,"r");
-  if (fichier != NULL)
-  {
-    while(fgets(mot,TAILLE_MOTS,fichier) != NULL) /* tant qu'on est pas à la fin du fichier */
-    {
-      insert(a,mot,strlen(mot)); /* on insère le mot qu'on vient de lire dans le fichier */
-    }
-  }
-  else
-  {
-    printf("problème d'ouverture du fichier");
-  }
-  fclose(fichier);
 }
