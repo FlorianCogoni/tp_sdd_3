@@ -10,6 +10,9 @@
 
 int main()
 {
+	arbre_t * e = NULL;
+	arbre_t * d = NULL;
+	arbre_t * c = NULL;
 	arbre_t * b = NULL;
 	arbre_t * a = (arbre_t *) malloc(sizeof(arbre_t));
 	a->lettre = 'a';
@@ -37,10 +40,25 @@ int main()
 	printf("\n");
 	printf("liberation de a\n\n");
 	liberer(a);
-	printf("test insertion dans b depuis le fichier test.txt\n\n");
-	insertionFichierTexte(&b,"test.txt");
+	printf("test insertion dans b depuis le fichier standard.txt\n\n");
+	insertionFichierTexte(&b,"standard.txt");
 	printf("affichage de b : \n\n");
 	affichage(b);
+	printf("\n");
+	printf("test insertion dans c depuis le fichier doublons.txt\n\n");
+	insertionFichierTexte(&c,"doublons.txt");
+	printf("affichage de c : \n\n");
+	affichage(c);
+	printf("\n");
+	printf("test insertion dans d depuis le fichier vide.txt\n\n");
+	insertionFichierTexte(&d,"vide.txt");
+	printf("affichage de d : \n\n");
+	affichage(d);
+	printf("\n");
+	printf("test insertion dans e depuis le fichier mots_decroissants.txt\n\n");
+	insertionFichierTexte(&e,"mots_decroissants.txt");
+	printf("affichage de e : \n\n");
+	affichage(e);
 	printf("\n");
 	printf("test d'insertion de mot deja existant avec vert \n\n");
 	insert(&b,"verT",4);
