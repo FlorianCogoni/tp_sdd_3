@@ -7,22 +7,24 @@
 
 #define TAILLE 30
 
-arbre_t ** recherche(arbre_t * a, char mot[], int l, int * i)
+arbre_t * recherche(arbre_t * a, char mot[], int l, int * i, int * parente)
 {
+  arbre_t * prec = NULL;
   arbre_t * cour = a;
-  arbre_t ** prec = &a;
   while(cour != NULL && tolower(cour->lettre) <= tolower(mot[*i]) && *i<l)
   {
     if(cour->lettre == mot[*i])
     {
-      prec = &(cour->lv);
+      prec = cour;
       cour = cour->lv;
       *i += 1;
+      *parente = 1;
     }
-    else 
+    else
     {
-      prec = &(cour->lh);
+      prec = cour;
       cour = cour->lh;
+      *parente = 2;
     }
   }
   return prec;
@@ -30,21 +32,28 @@ arbre_t ** recherche(arbre_t * a, char mot[], int l, int * i)
 
 void insert(arbre_t ** a, char mot[], int l )
 {
-  arbre_t * ins;
+  arbre_t * nouv;
   arbre_t * temp;
   int i = 0;
-  arbre_t ** m = recherche(*a,mot,l,&i);
-  if (i < l) 
+  int parente = 0;
+  arbre_t * adr_ins = recherche(*a,mot,l,&i,&parente);
+  if (i < l)
   {
-    if(*a != NULL) 
+    if(*a != NULL)
     {
-      ins = (arbre_t *) malloc(sizeof(arbre_t));
-      ins->lettre = mot[i];
-      ins->lv = NULL;
-      ins->lh = NULL;
-      temp = *m;
-      *m = ins;
-      ins->lh = temp;
+      nouv = (arbre_t *) malloc(sizeof(arbre_t));
+      nouv->lettre = mot[i];
+      nouv->lv = NULL;
+      nouv->lh = NULL;
+      if(parente == 1){
+          temp = adr_ins->lv;
+          adr_ins->lv = nouv;
+      }
+      else{
+        temp = adr_ins->lh;
+        adr_ins->lh = nouv;
+      }
+      nouv->lh = temp;
       i++;
     }
     else
@@ -53,26 +62,26 @@ void insert(arbre_t ** a, char mot[], int l )
       (*a)->lettre = mot[i];
       (*a)->lv = NULL;
       (*a)->lh = NULL;
-      ins = *a;
+      nouv = *a;
       i++;
     }
     while(i<l)
     {
-      temp = ins;
-      ins = (arbre_t *) malloc(sizeof(arbre_t));
-      ins->lettre = mot[i];
-      ins->lh = NULL;
-      ins->lv = NULL;
-      temp->lv = ins;
+      temp = nouv;
+      nouv = (arbre_t *) malloc(sizeof(arbre_t));
+      nouv->lettre = mot[i];
+      nouv->lh = NULL;
+      nouv->lv = NULL;
+      temp->lv = nouv;
       i++;
     }
   }
   else
   {
-
+    adr_ins->lettre = mot[l-1];
+  }
 }
 
-}
 
 void liberer(arbre_t * a)
 {
@@ -80,20 +89,20 @@ void liberer(arbre_t * a)
   {
     free(a);
   }
-  else 
+  else
   {
-    if (a->lh == NULL && a->lv == NULL) 
+    if (a->lh == NULL && a->lv == NULL)
     {
       free(a);
-    } 
-    else 
+    }
+    else
     {
-      if (a->lv != NULL) 
+      if (a->lv != NULL)
       {
         liberer(a->lv);
         a->lv = NULL;
       }
-      if (a->lh != NULL) 
+      if (a->lh != NULL)
       {
         liberer(a->lh);
         a->lh = NULL;
@@ -103,59 +112,13 @@ void liberer(arbre_t * a)
 }
 
 
-
-
-
-arbre_t ** recherche(arbre_t * a, char mot[], int l,int * i)
-{ /*mot en minuscule*/
-  arbre_t * cour = a;
-  arbre_t ** prec = NULL;
-  while((cour =! NULL) && (*i<l))
-  /* on sort quand on a la bonne lettre ou qu'on a dépassé le mot */
-  {
-    if (tolower(cour->lettre) == mot[*i])
-    {
-      prec = &cour;
-      cour = cour->lv;
-      *i+=1;
-    }
-    else
-    {
-      prec = &cour;
-      cour = cour->lh;
-    }
-  }
-  return prec;
+char * derniereLettreEnMaj(char mot[])
+{
+  mot[strlen(mot)-1]=toupper(mot[strlen(mot)-1]);
+  return mot;
 }
 
-void insert(arbre_t * a, char mot[], int l )
-{ /*faire insertion fils*/
-  int i = 0;
-  arbre_t * ins = NULL;
-  arbre_t * temp = NULL;
-  arbre_t ** m = recherche(a,mot,l,&i);
-  if (i < l)
-  {
-    mot[l-1] = toupper(mot[l-1]);
-    ins = (arbre_t *) malloc(sizeof(arbre_t));
-    ins->lettre = mot[i];
-    temp = *m;
-    *m = ins;
-    ins->lh = temp;
-    i++;
-    while(i<l)
-    {
-      temp = ins;
-      ins = (arbre_t *) malloc(sizeof(arbre_t));
-      ins->lettre = mot[i];
-      temp->lv = ins;
-      i++;
-    }
-  }
-}
-
-
-void insertionFichierTexte(arbre_t * a, char nomFichier[])
+void insertionFichierTexte(arbre_t ** a, char nomFichier[])
 {
   FILE * fichier = NULL;
   char mot[TAILLE] ="";

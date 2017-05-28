@@ -12,6 +12,7 @@ void afficheMot(pile_t * pPile)
     printf("%c", tolower((*cour)->lettre));
     cour ++;
   }
+	printf("\n");
 }
 
 
