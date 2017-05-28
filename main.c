@@ -26,5 +26,6 @@ int main()
 	liberer(a);
 	/*insertionFichierTexte(&b,"test.txt");*/
 	liberer(b);
+	/*printf("%s \n",derniereLettreEnMaj("patate",6))*/;
 	return 0;
 }
