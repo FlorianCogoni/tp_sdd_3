@@ -112,9 +112,9 @@ void liberer(arbre_t * a)
 }
 
 
-char * derniereLettreEnMaj(char mot[])
+char * derniereLettreEnMaj(char mot[],int l)
 {
-  mot[strlen(mot)-1]=toupper(mot[strlen(mot)-1]);
+  mot[l-1]=toupper(mot[l-1]);
   return mot;
 }
 

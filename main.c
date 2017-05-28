@@ -24,7 +24,7 @@ int main()
 	affichage(a);
 	printf("\n");
 	liberer(a);
-	insertionFichierTexte(&b,"test.txt");
+	/*insertionFichierTexte(&b,"test.txt");*/
 	liberer(b);
 	return 0;
 }
