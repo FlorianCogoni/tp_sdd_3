@@ -38,9 +38,9 @@ void affichageAvecMotif(arbre_t * a, char motif[])
 }
 
 
-void rechercheMotif(arbre_t * a, char motif[])
+void rechercheMotif(arbre_t * a, char motif[],int l)
 {
-  int l = strlen(motif);
+  /*int l = strlen(motif);*/
   int i = 0;
   int parente = 0;
   arbre_t * adr_motif = recherche(a, motif, l,&i,&parente);

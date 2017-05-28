@@ -146,7 +146,7 @@ void insertionFichierTexte(arbre_t ** a, char nomFichier[])
   {
     while(fgets(mot,TAILLE,fichier) != NULL)
     {
-      printf("%s",mot);
+      /*printf("%s",mot);*/
       insert(a,mot,strlen(mot));
     }
   }

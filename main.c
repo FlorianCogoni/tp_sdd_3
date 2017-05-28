@@ -22,10 +22,11 @@ int main()
 	insert(&a,"arborescenT",11);
 	insert(&a,"arboricolE",10);
 	affichage(a);
+	rechercheMotif(a,"bon",3);
 	printf("\n");
 	liberer(a);
-	/*insertionFichierTexte(&b,"test.txt");*/
+	insertionFichierTexte(&b,"test.txt");
+	affichage(b);
 	liberer(b);
-	/*printf("%s \n",derniereLettreEnMaj("patate",6))*/;
 	return 0;
 }
