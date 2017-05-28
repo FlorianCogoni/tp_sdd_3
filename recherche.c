@@ -62,7 +62,7 @@ void affichageAvecMotif(arbre_t * a, char motif[])
 
 /*---------------------------------------------------------------------
 
- Cette fonction affiche les mots qui commençent par motif.
+ Cette fonction affiche les mots qui commencent par motif.
  	Elle prend en entrée la longueur du motif.
 
 */
