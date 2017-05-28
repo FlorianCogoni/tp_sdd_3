@@ -4,8 +4,10 @@
 #include <ctype.h>
 #include "struct.h"
 #include "insertion.h"
+#include "pile.h"
 
-#define TAILLE 30
+#define TAILLE_MOTS 30 /* taille maximale des mots */
+#define NB_BLOCS 200 /* nombre de blocs (de l'arbre) maximal */
 
 arbre_t * recherche(arbre_t * a, char mot[], int l, int * i, int * parente)
 {
@@ -97,57 +99,49 @@ void insert(arbre_t ** a, char mot[], int l )
 
 void liberer(arbre_t * a)
 {
-  if(a == NULL)
-    /* si l'arbre est vide*/
-  {
-    free(a);
-  }
-  else
-  {
-    if (a->lh == NULL && a->lv == NULL)
-      /*si les arbres freres et fils sont vide*/
-    {
-      free(a);              /*on peut liberer l'arbre*/
-    }
-    else
-      /* si l'arbre frere ou fils n'est pas vide*/
-    {
-      if (a->lv != NULL)
-        /*si l'arbre fils n'est pas vide*/
-      {
-        /* on le libere */
-        liberer(a->lv);
-        a->lv = NULL;
-      }
-      if (a->lh != NULL)
-        /*si l'arbre frere n'est pas vide*/
-      {
-        /* on le libere */
-        liberer(a->lh);
-        a->lh = NULL;
-      }
-    }
-  }
+	int fin=0;
+	arbre_t * cour = a;
+	pile_t * pPileParcours = initPile(NB_BLOCS); /* pile pour parcourir l'arbre */
+	pile_t * pPileAliberer = initPile(NB_BLOCS); /* pile pour entasser les adresse à libérer */
+	while (!fin)
+	{
+		while (cour != NULL)
+		{
+			empile(pPileParcours,cour); /* on empile les adresse pour pouvoir revenir aux pères */
+      		empile(pPileAliberer,cour); /* on empile chaque nouvelle adresse */
+			cour = cour->lv;
+		}
+		if (! estVide(pPileParcours))
+		{
+			depile(pPileParcours,&cour); /* on revient aux pères */
+			cour=cour->lh;
+		}
+		else
+		{
+			fin = 1;
+		}
+	}
+	while (! estVide(pPileAliberer)) /* tant qu'on a pas libéré toutes les adresse */
+	{
+		depile(pPileAliberer,&cour); /* on dépile les adresse à libérer */
+		free(cour);
+	}
+	libererPile(pPileParcours); /* on libère les 2 piles */
+	libererPile(pPileAliberer);
 }
 
 
-/*char * derniereLettreEnMaj(char mot[],int l)
-{
-  mot[l-1]=toupper(mot[l-1]);
-  return mot;
-}*/
-
 void insertionFichierTexte(arbre_t ** a, char nomFichier[])
 {
+	/* les mots du fichier doivent avoir leur dernière lettre en majuscule */
   FILE * fichier = NULL;
-  char mot[TAILLE] ="";
+  char mot[TAILLE_MOTS] ="";
   fichier = fopen(nomFichier,"r");
   if (fichier != NULL)
   {
-    while(fgets(mot,TAILLE,fichier) != NULL)
+    while(fgets(mot,TAILLE_MOTS,fichier) != NULL) /* tant qu'on est pas à la fin du fichier */
     {
-      /*printf("%s",mot);*/
-      insert(a,mot,strlen(mot));
+      insert(a,mot,strlen(mot)); /* on insère le mot qu'on vient de lire dans le fichier */
     }
   }
   else
