@@ -49,6 +49,6 @@ int main()
 	printf("\n");
 	printf("liberation de b\n\n");
 	liberer(b);
-	printf("fin des test\n");
+	printf("fin des tests\n");
 	return 0;
 }
