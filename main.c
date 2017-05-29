@@ -39,14 +39,17 @@ int main()
 	affichage(mots_decroissants);
 	printf("\n");
 
-	printf("test rechercheMotif sur standard avec le motif bo : \n");
+	printf("test rechercheMotif sur standard avec le motif bo : \n\n");
 	rechercheMotif(standard,"bo",2);
+	printf("\n");
 
-	printf("test rechercheMotif sur standard avec le motif abr : \n");
+	printf("test rechercheMotif sur standard avec le motif abr : \n\n");
 	rechercheMotif(standard,"abr",3);
+	printf("\n");
 
-	printf("test rechercheMotif sur standard avec le motif vide : \n");
+	printf("test rechercheMotif sur standard avec le motif vide : \n\n");
 	rechercheMotif(standard,"",0);
+	printf("\n");
 
 	printf("liberation des arbres \n");
 	liberer(standard);
