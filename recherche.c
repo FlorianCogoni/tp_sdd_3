@@ -62,7 +62,7 @@ void affichageAvecMotif(arbre_t * a, char motif[])
 
 /*---------------------------------------------------------------------
 
- Cette fonction affiche les mots qui commencent par motif.
+ Cette fonction affiche les mots qui commençent par motif.
  	Elle prend en entrée la longueur du motif.
 
 */
@@ -72,12 +72,17 @@ void rechercheMotif(arbre_t * a, char motif[], int l)
   int i = 0; /* ne sert pas mais doit être mis en paramètre de recherche */
   int parente = 0;
   arbre_t * adr_motif = recherche(a, motif, l, &i, &parente); /* on récupère l'adresse du précédent de motif */
-	if (parente == 1) /* le motif est en lien vertical */
+	switch (parente)
 	{
-		affichageAvecMotif(adr_motif->lv,motif);
-	}
-	else /* le motif est en lien horizontal */
-	{
-		affichageAvecMotif(adr_motif->lh,motif);
+        case 1 : /* le motif est en lien vertical */
+		    affichageAvecMotif(adr_motif->lv,motif);
+            break;
+
+        case 2 : /* le motif est en lien horizontal */
+            affichageAvecMotif(adr_motif->lh,motif);
+            break;
+        default : /*le motif est de taille 0*/
+            affichageAvecMotif(a,motif);
+            break;
 	}
 }
